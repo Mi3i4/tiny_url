@@ -9,9 +9,9 @@ import (
 
 var ErrEmptyURL = errors.New("url must not be empty")
 
-func Shorten(url string, codeLen int) (string, error) {
-	if url == "" {
-		return "", ErrEmptyURL
+func Shorten(rawURL string, codeLen int) (string, error) {
+	if err := ValidateURL(rawURL); err != nil {
+		return "", err
 	}
 
 	b := make([]byte, codeLen)
@@ -19,6 +19,5 @@ func Shorten(url string, codeLen int) (string, error) {
 		return "", fmt.Errorf("generate code: %w", err)
 	}
 
-	code := base64.RawURLEncoding.EncodeToString(b)
-	return code[:codeLen], nil
+	return base64.RawURLEncoding.EncodeToString(b)[:codeLen], nil
 }
